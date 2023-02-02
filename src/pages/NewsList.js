@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import $api from '../helpers/api_helper';
 import Container from '@mui/material/Container';
 import NewsCard from '../Components/News/NewsCard';
@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everything', }) => {
     const {category: categoryName = ''} = useParams();
-
+    const {pathname} = useLocation()
     const [articles, setArticles] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [total, setTotal] = useState(0);
@@ -33,6 +33,10 @@ const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everyt
         setSearchFormat(formatSearch);
     }, [formatSearch]);
 
+    useEffect(()=>{
+        setCurrentPage(1)
+    },[pathname])
+
     useEffect(() => {
         setSearchFormat(formatSearch);
     }, []);
@@ -45,7 +49,7 @@ const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everyt
                 setTotal(totalResults);
 
                 setLoading(false)
-            });
+            }).catch((e)=> {console.log(e);}).finally( ()=> setLoading(false));
     }, [
         country,
         search,
@@ -62,7 +66,7 @@ const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everyt
                 setTotal(totalResults);
 
                 setLoading(false)
-            });
+            }).catch((e)=> {console.log(e);}).finally( ()=> setLoading(false));
         }
     }, [
         currentPage,
@@ -136,9 +140,9 @@ const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everyt
                 >
                     <Grid container direction={'row'} spacing={1}>
                         { articles.length > 0 ?
-                            articles.map(({urlToImage, title, description, author, url, publishedAt}) => (
+                            articles.map(({urlToImage, title, description, author, url, publishedAt}, i) => (
                                 <NewsCard
-                                    key={url}
+                                    key={i}
                                     urlToImage={urlToImage}
                                     title={title}
                                     description={description}

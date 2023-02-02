@@ -10,9 +10,10 @@ const NewsCard = ({
                       author = '',
                       url = '',
                       publishedAt = '',
+                      i
                   }) => {
     return (
-        <Grid item xl={4} md={6} sm={12} xs={12} mb={2}>
+        <Grid item xl={4} md={6} sm={12} xs={12} mb={2} key={i}>
             <Card sx={{maxWidth: 345}}>
                 <CardMedia
                     sx={{height: 140}}
