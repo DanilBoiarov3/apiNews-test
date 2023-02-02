@@ -1,4 +1,5 @@
-import * as React from 'react';
+
+import React, {useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,10 +15,9 @@ import {useNavigate} from 'react-router-dom';
 import {appPages, countryOptions} from '../../common/constant';
 import Select from 'react-select';
 
-const NavBar = ({setCountry})=> {
+const NavBar = ({setCountry, isTopNewsActive, setIsTopNewsActive, activeCategory, setActiveCategory})=> {
     const navigate = useNavigate()
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    // const [country, setCountry]=useState('')
+    const [anchorElNav, setAnchorElNav] = useState(null);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -53,6 +53,28 @@ const NavBar = ({setCountry})=> {
                     >
                         NEWS API LOGO
                     </Typography>
+
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            color: isTopNewsActive ? 'black' : 'inherit',
+                            textDecoration: 'none',
+                            cursor:'pointer'
+                        }}
+                        onClick={()=> {
+                            setIsTopNewsActive(prev => !prev )
+                            navigate('/top-news')
+                        }}
+                    >
+                        Top News
+                    </Typography>
+
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -109,12 +131,23 @@ const NavBar = ({setCountry})=> {
                     >
                         NEWS API LOGO
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box
+                        style={{display: `${isTopNewsActive ? 'flex' : 'none'}` }}
+                        sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {appPages.map((item) => (
                             <Button
                                 key={item.title}
-                                onClick={()=>handleCloseNavMenu(item.link)}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                onClick={()=> {
+                                    setActiveCategory(item.title.toLowerCase())
+                                    handleCloseNavMenu(item.link)
+                                    navigate(`/top-news/${item.title.toLowerCase()}`)
+                                }
+                            }
+                                sx={{
+                                    my: 2,
+                                    color: activeCategory === item.title ? 'black' : 'white',
+                                    display: 'block'
+                                }}
                             >
                                 {item.title}
                             </Button>

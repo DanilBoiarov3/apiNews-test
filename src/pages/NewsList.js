@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-const NewsList = ({country}) => {
+const NewsList = ({country, isTopNewsActive}) => {
     const {category: categoryName = ''} = useParams();
 
     const [articles, setArticles] = useState([]);
@@ -19,11 +19,10 @@ const NewsList = ({country}) => {
     const [category, setCategory] = useState('');
     const [loading, setLoading] = useState(false);
 
-
     const onSearchChange = (e) => {
         setTimeout(() => {
             setSearch(e.target.value.toLowerCase());
-        }, [900]);
+        }, 900);
     };
 
     useEffect(() => {
@@ -31,7 +30,6 @@ const NewsList = ({country}) => {
     }, [categoryName]);
 
     useEffect(() => {
-        if (category) {
             setLoading(true)
 
             updateNews().then(({articles = [], totalResults = 0}) => {
@@ -40,11 +38,11 @@ const NewsList = ({country}) => {
 
                 setLoading(false)
             });
-        }
     }, [
         country,
         search,
         category,
+        isTopNewsActive
     ]);
 
     useEffect(() => {
@@ -64,12 +62,12 @@ const NewsList = ({country}) => {
 
     const updateNews = async () => {
         try {
-            const {data} = await $api.get(``, {
+            const {data} = await $api.get(`${isTopNewsActive ? '/top-headlines' : 'everything'}`, {
                 params: {
                     apiKey: process.env.REACT_APP_NEWS_API,
                     page: currentPage,
                     pageSize: pageSize,
-                    q: search,
+                    q: isTopNewsActive || search ? search : 'bitcoin',
                     category: category,
                     country: country,
                     language: 'en',

@@ -2,15 +2,32 @@ import React from 'react';
 import {Route, Routes} from 'react-router-dom';
 import NotFoundPage from './NotFoundPage';
 import NewsList from '../../pages/NewsList';
-import HomePage from '../../pages/HomePage';
 
-const AppRouter = ({country}) => {
+const AppRouter = ({country, isTopNewsActive}) => {
   return (
     <div>
       <Routes>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="/:category" element={<NewsList  country={country}/>}/>
-          <Route exact path="*" element={<NotFoundPage/>}/>
+          <Route path="/" element={
+              <NewsList
+                  country={country}
+                  isTopNewsActive={isTopNewsActive}
+              />
+          }/>
+          <Route path="/top-news" element={
+              <NewsList
+                  country={country}
+                  isTopNewsActive={isTopNewsActive}
+              />
+          }/>
+          <Route path="/top-news/:category" element={
+              <NewsList
+                  country={country}
+                  isTopNewsActive={isTopNewsActive}
+              />
+          }/>
+          <Route exact path="*" element={
+              <NotFoundPage/>
+          }/>
       </Routes>
     </div>
   );

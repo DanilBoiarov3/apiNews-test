@@ -6,15 +6,22 @@ import {useState} from 'react';
 function App() {
 
     const [country, setCountry]=useState('')
-
-    const setCountryHandler = (value) => {
-        setCountry(value)
-    }
+    const [activeCategory, setActiveCategory] = useState('');
+    const [isTopNewsActive, setIsTopNewsActive] = useState(false);
 
     return (
       <BrowserRouter>
-          <NavBar setCountry={setCountryHandler}/>
-        <AppRouter country={country}/>
+          <NavBar
+              setCountry={setCountry}
+              activeCategory={activeCategory}
+              isTopNewsActive={isTopNewsActive}
+              setActiveCategory={setActiveCategory}
+              setIsTopNewsActive={setIsTopNewsActive}
+          />
+        <AppRouter
+            country={country}
+            isTopNewsActive={isTopNewsActive}
+        />
       </BrowserRouter>
   );
 }
