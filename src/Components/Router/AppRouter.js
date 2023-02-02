@@ -3,26 +3,33 @@ import {Route, Routes} from 'react-router-dom';
 import NotFoundPage from './NotFoundPage';
 import NewsList from '../../pages/NewsList';
 
-const AppRouter = ({country, isTopNewsActive}) => {
+const AppRouter = ({country, setSearchFormat, countryName}) => {
   return (
     <div>
       <Routes>
           <Route path="/" element={
               <NewsList
+                  formatSearch={'everything'}
                   country={country}
-                  isTopNewsActive={isTopNewsActive}
+                  countryName={countryName}
+                  setSearchFormat={setSearchFormat}
+
               />
           }/>
           <Route path="/top-news" element={
               <NewsList
+                  formatSearch={'top-headlines'}
                   country={country}
-                  isTopNewsActive={isTopNewsActive}
+                  countryName={countryName}
+                  setSearchFormat={setSearchFormat}
               />
           }/>
           <Route path="/top-news/:category" element={
               <NewsList
+                  formatSearch={'top-headlines'}
                   country={country}
-                  isTopNewsActive={isTopNewsActive}
+                  countryName={countryName}
+                  setSearchFormat={setSearchFormat}
               />
           }/>
           <Route exact path="*" element={

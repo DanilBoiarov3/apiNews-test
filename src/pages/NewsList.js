@@ -8,7 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-const NewsList = ({country, isTopNewsActive}) => {
+const NewsList = ({country, setSearchFormat, countryName, formatSearch = 'everything', }) => {
     const {category: categoryName = ''} = useParams();
 
     const [articles, setArticles] = useState([]);
@@ -30,6 +30,14 @@ const NewsList = ({country, isTopNewsActive}) => {
     }, [categoryName]);
 
     useEffect(() => {
+        setSearchFormat(formatSearch);
+    }, [formatSearch]);
+
+    useEffect(() => {
+        setSearchFormat(formatSearch);
+    }, []);
+
+    useEffect(() => {
             setLoading(true)
 
             updateNews().then(({articles = [], totalResults = 0}) => {
@@ -42,7 +50,7 @@ const NewsList = ({country, isTopNewsActive}) => {
         country,
         search,
         category,
-        isTopNewsActive
+        formatSearch
     ]);
 
     useEffect(() => {
@@ -62,14 +70,14 @@ const NewsList = ({country, isTopNewsActive}) => {
 
     const updateNews = async () => {
         try {
-            const {data} = await $api.get(`${isTopNewsActive ? '/top-headlines' : 'everything'}`, {
+            const {data} = await $api.get(`${formatSearch}`, {
                 params: {
                     apiKey: process.env.REACT_APP_NEWS_API,
                     page: currentPage,
                     pageSize: pageSize,
-                    q: isTopNewsActive || search ? search : 'bitcoin',
+                    q: formatSearch === 'top-headlines' || search ? search : 'a',
                     category: category,
-                    country: country,
+                    country: formatSearch === 'everything' ? '' : country,
                     language: 'en',
                 },
             });
@@ -91,6 +99,10 @@ const NewsList = ({country, isTopNewsActive}) => {
 
     return (
         <Container flex>
+            <h1 style={{display: formatSearch === 'top-headlines' ? 'block' : 'none'}}>Top news from: {countryName || 'All countries'}</h1>
+
+            <h1 style={{display: formatSearch === 'everything' ? 'block' : 'none'}}>Everything news </h1>
+
             <TextField
                 label="Search news"
                 onChange={onSearchChange}
@@ -116,7 +128,11 @@ const NewsList = ({country, isTopNewsActive}) => {
                         return ++prev;
                     })}
                     hasMore={articles.length !== total}
-                    loader={<CircularProgress/>}
+                    loader={
+                        <div style={{textAlign: 'center'}}>
+                            <CircularProgress/>
+                        </div>
+                    }
                 >
                     <Grid container direction={'row'} spacing={1}>
                         { articles.length > 0 ?
